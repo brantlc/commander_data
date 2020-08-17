@@ -17,3 +17,11 @@ def get_filters():
 
     print('-'*40)
     return placing
+
+def main():
+    while True:
+        get_filters()
+        break
+
+if __name__ == "__main__":
+	main()
