@@ -18,6 +18,18 @@ def get_filters():
     print('-'*40)
     return placing
 
+def color_stats(df):
+    """Displays statistics about each color and color combination."""
+
+    print('\nCalculating the win percentage of each color and color combination...\n')
+
+    for color in color_identity_of_commander:
+        wins = player_won.count('Yes')
+        total_games = player_won.count()
+        win_percentage = wins/total_games * 100
+
+        print('{}: {}%'.format(color, win_percentage))
+
 def main():
     while True:
         get_filters()
