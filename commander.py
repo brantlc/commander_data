@@ -32,7 +32,9 @@ def color_stats(df):
 
 def main():
     while True:
+        df = pd.read_csv('commander_data.csv')
         get_filters()
+        color_stats(df)
         break
 
 if __name__ == "__main__":
