@@ -14,11 +14,16 @@ def color_stats(df):
                   'BG', 'RG', 'WUB', 'WUR', 'WUG', 'WBR', 'WBG', 'WRG', 'UBR', 'UBG', 'URG',
                   'BRG', 'WUBR', 'WUBG', 'WURG', 'WBRG', 'UBRG', 'WUBRG', '0']
 
-        one_color = []
-        two_color = []
-        three_color = []
-        four_color = []
-        five_color = []
+        one_color_wins = []
+        two_color_wins = []
+        three_color_wins = []
+        four_color_wins = []
+        five_color_wins = []
+        one_color_games = []
+        two_color_games = []
+        three_color_games = []
+        four_color_games = []
+        five_color_games = []
 
         for color in colors:
             df = pd.read_csv('commander_data.csv')
@@ -36,25 +41,28 @@ def color_stats(df):
                 print(color + '\nWin percentage: ' + str(win_percentage) + '%\nMost common deck archetype: ' +
                       df['Deck Type'].mode()[0] + '\nMost common commander: ' + df['Commander'].mode()[0] + '\n')
 
-                if len(color) == 1:
-                    one_color.append(win_percentage)
+                if color != '0' and len(color) == 1:
+                    one_color_wins.append(wins)
+                    one_color_games.append(total_games)
                 elif len(color) == 2:
-                    two_color.append(win_percentage)
+                    two_color_wins.append(wins)
+                    two_color_games.append(total_games)
                 elif len(color) == 3:
-                    three_color.append(win_percentage)
+                    three_color_wins.append(wins)
+                    three_color_games.append(total_games)
                 elif len(color) == 4:
-                    four_color.append(win_percentage)
+                    four_color_wins.append(wins)
+                    four_color_games.append(total_games)
                 elif len(color) == 5:
-                    five_color.append(win_percentage)
+                    five_color_wins.append(wins)
+                    five_color_games.append(total_games)
 
-        def Average(lst):
-            return sum(lst) / len(lst)
 
-        print('Win percentage by number of colors:\nOne: ' + str(round(Average(one_color))) + '\nTwo: ' +
-              str(round(Average(two_color))) + '\nThree: ' + str(round(Average(three_color))) + '\nFour: ' +
-              str(round(Average(four_color))) + '\nFive: ' + str(round(Average(five_color))) + '\nColorless: ' +
-              str(win_percentage))
-
+        print('Win percentage by number of colors:\nOne: ' + str(round(sum(one_color_wins) / sum(one_color_games) *
+              100)) + '\nTwo: ' + str(round(sum(two_color_wins) / sum(two_color_games) * 100)) + '\nThree: ' +
+              str(round(sum(three_color_wins) / sum(three_color_games) * 100)) + '\nFour: ' +
+              str(round(sum(four_color_wins) / sum(four_color_games) * 100)) + '\nFive: ' +
+              str(round(sum(five_color_wins) / sum(five_color_games) * 100)) + '\nColorless: ' + str(win_percentage))
 
 
         print("\nThis took %s seconds." % (time.time() - start_time))
