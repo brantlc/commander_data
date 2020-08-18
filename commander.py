@@ -25,6 +25,17 @@ def color_stats(df):
         four_color_games = []
         five_color_games = []
 
+        white_wins = []
+        blue_wins = []
+        black_wins = []
+        red_wins = []
+        green_wins = []
+        white_games = []
+        blue_games = []
+        black_games = []
+        red_games = []
+        green_games = []
+
         for color in colors:
             df = pd.read_csv('commander_data.csv')
             df = df[df['Color Identity of Commander'] == color]
@@ -57,12 +68,36 @@ def color_stats(df):
                     five_color_wins.append(wins)
                     five_color_games.append(total_games)
 
+                #Determine how well each color did even as part of a combination.
+                if 'W' in color:
+                    white_wins.append(wins)
+                    white_games.append(total_games)
+                elif 'U' in color:
+                    blue_wins.append(wins)
+                    blue_games.append(total_games)
+                elif 'B' in color:
+                    black_wins.append(wins)
+                    black_games.append(total_games)
+                elif 'R' in color:
+                    red_wins.append(wins)
+                    red_games.append(total_games)
+                elif 'G' in color:
+                    green_wins.append(wins)
+                    green_games.append(total_games)
+
 
         print('Win percentage by number of colors:\nOne: ' + str(round(sum(one_color_wins) / sum(one_color_games) *
-              100)) + '\nTwo: ' + str(round(sum(two_color_wins) / sum(two_color_games) * 100)) + '\nThree: ' +
-              str(round(sum(three_color_wins) / sum(three_color_games) * 100)) + '\nFour: ' +
-              str(round(sum(four_color_wins) / sum(four_color_games) * 100)) + '\nFive: ' +
-              str(round(sum(five_color_wins) / sum(five_color_games) * 100)) + '\nColorless: ' + str(win_percentage))
+              100)) + '%\nTwo: ' + str(round(sum(two_color_wins) / sum(two_color_games) * 100)) + '%\nThree: ' +
+              str(round(sum(three_color_wins) / sum(three_color_games) * 100)) + '%\nFour: ' +
+              str(round(sum(four_color_wins) / sum(four_color_games) * 100)) + '%\nFive: ' +
+              str(round(sum(five_color_wins) / sum(five_color_games) * 100)) + '%\nColorless: ' + str(win_percentage) +
+              '%')
+
+        print('\nWin percentage by color (mono or in a combination):\nWhite: ' + str(round(sum(white_wins) / sum(white_games) *
+              100)) + '%\nBlue: ' + str(round(sum(blue_wins) / sum(blue_games) * 100)) + '%\nBlack: ' +
+              str(round(sum(black_wins) / sum(black_games) * 100)) + '%\nRed: ' + str(round(sum(red_wins) /
+              sum(red_games) * 100)) + '%\nGreen: ' + str(round(sum(green_wins) / sum(green_games) * 100)) +
+              '%\nColorless: ' + str(win_percentage) + '%')
 
 
         print("\nThis took %s seconds." % (time.time() - start_time))
