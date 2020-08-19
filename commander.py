@@ -1,7 +1,22 @@
 import time
 import pandas as pd
-import numpy as np
 import scipy.stats as ss
+
+def binom_win(games, successes):
+    hh = ss.binom(games, .25)
+
+    p = 0
+    for k in range(1, successes + 1):
+        p += hh.pmf(k)
+    return p
+
+def binom_lose(games, successes):
+    hh = ss.binom(games, .75)
+
+    p = 0
+    for k in range(1, successes + 1):
+        p += hh.pmf(k)
+    return p
 
 def color_stats(df):
     """Displays statistics about each color and color combination."""
@@ -37,14 +52,6 @@ def color_stats(df):
         red_games = []
         green_games = []
 
-        def binom_prob(games, successes):
-            hh = ss.binom(games, .25)
-
-            p = 0
-            for k in range(1, successes + 1):
-                p += hh.pmf(k)
-            return p
-
         for color in colors:
             df = pd.read_csv('commander_data.csv')
             df = df[df['Color Identity of Commander'] == color]
@@ -60,7 +67,7 @@ def color_stats(df):
                 win_percentage = round(wins/total_games * 100, 1)
 
                 #Test for statistcal significance.
-                total_p = binom_prob(total_games, wins)
+                total_p = binom_win(total_games, wins)
 
                 if round(total_p) < .05:
                     print(color, '\nWin percentage: ', win_percentage, '%\nMost common deck archetype: ',
@@ -104,17 +111,17 @@ def color_stats(df):
                     green_wins.append(wins)
                     green_games.append(total_games)
 
-        one_color_p = binom_prob(sum(one_color_games), sum(one_color_wins))
-        two_color_p = binom_prob(sum(two_color_games), sum(two_color_wins))
-        three_color_p = binom_prob(sum(three_color_games), sum(three_color_wins))
-        four_color_p = binom_prob(sum(four_color_games), sum(four_color_wins))
-        five_color_p = binom_prob(sum(five_color_games), sum(five_color_wins))
+        one_color_p = binom_win(sum(one_color_games), sum(one_color_wins))
+        two_color_p = binom_win(sum(two_color_games), sum(two_color_wins))
+        three_color_p = binom_win(sum(three_color_games), sum(three_color_wins))
+        four_color_p = binom_win(sum(four_color_games), sum(four_color_wins))
+        five_color_p = binom_win(sum(five_color_games), sum(five_color_wins))
 
-        white_p = binom_prob(sum(white_games), sum(white_wins))
-        blue_p = binom_prob(sum(blue_games), sum(blue_wins))
-        black_p = binom_prob(sum(black_games), sum(black_wins))
-        red_p = binom_prob(sum(red_games), sum(red_wins))
-        green_p = binom_prob(sum(green_games), sum(green_wins))
+        white_p = binom_win(sum(white_games), sum(white_wins))
+        blue_p = binom_win(sum(blue_games), sum(blue_wins))
+        black_p = binom_win(sum(black_games), sum(black_wins))
+        red_p = binom_win(sum(red_games), sum(red_wins))
+        green_p = binom_win(sum(green_games), sum(green_wins))
 
         print('Win percentage by number of colors:\nOne:', round(sum(one_color_wins) / sum(one_color_games) * 100, 1),
               '% p =', round(one_color_p, 3), '\nTwo:', round(sum(two_color_wins) / sum(two_color_games) * 100, 1),
@@ -129,16 +136,39 @@ def color_stats(df):
               '% p =', round(blue_p, 3), '\nBlack:', round(sum(black_wins) / sum(black_games) * 100, 1), '% p =',
               round(black_p, 3), '\nRed:', round(sum(red_wins) / sum(red_games) * 100, 1), '% p =', round(red_p, 3),
               '\nGreen:', round(sum(green_wins) / sum(green_games) * 100, 1), '% p =', round(green_p, 3),
-              '\nColorless:', win_percentage, '% p =', round(total_p, 3)) 
-
+              '\nColorless:', win_percentage, '% p =', round(total_p, 3))
 
         print("\nThis took %s seconds." % (time.time() - start_time))
         print('-' * 40)
+
+def ramp_stats(df):
+    """Displays statistics about early ramp."""
+
+    check = input('\nWould you like to see statistics based on wether a player ramped early or not? y or n?\n').lower()
+    while check != 'y' and check != 'n':
+        check = input('\nPlease type y or n.\n').lower()
+    if check == 'y':
+        start_time = time.time()
+
+        losses = 0
+        for t in df['Sol Ring / Mana Crypt by Turn 3']:
+            if t == 'No Early ManaC/Sol Ring':
+                losses += 1
+
+    total_games = df['Sol Ring / Mana Crypt by Turn 3'].count()
+    ramp_p = binom_lose(total_games, losses)
+
+    print("Probability to lose if the player didn't play a Sol Ring or Mana Crypt:", round(losses / total_games * 100,
+          1), '% p =', round(ramp_p, 3))
+
+    print("\nThis took %s seconds." % (time.time() - start_time))
+    print('-' * 40)
 
 def main():
     while True:
         df = pd.read_csv('commander_data.csv')
         color_stats(df)
+        ramp_stats(df)
         break
 
 if __name__ == "__main__":
